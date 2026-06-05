@@ -1,0 +1,6 @@
+peft>=0.9.0
+accelerate>=0.27.0
+bitsandbytes>=0.42.0
+sacrebleu>=2.3.1
+pycocoevalcap>=1.2
+pycocotools>=2.0.7

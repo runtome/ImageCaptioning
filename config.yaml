@@ -1,0 +1,55 @@
+data:
+  base_dir: "/teamspace/studios/this_studio"
+  train_json: "/teamspace/studios/this_studio/capgen_v1.0_train.json"
+  val_json: "/teamspace/studios/this_studio/capgen_v1.0_val.json"
+  num_workers: 4
+  pin_memory: true
+  skip_missing: false   # set true to skip absent COCO images during staged download
+
+model:
+  name: "Qwen/Qwen2-VL-2B-Instruct"
+  load_in_4bit: true
+  bnb_4bit_quant_type: "nf4"
+  bnb_4bit_compute_dtype: "bfloat16"
+  bnb_4bit_use_double_quant: true
+  lora_r: 16
+  lora_alpha: 32
+  lora_dropout: 0.05
+  lora_target_modules:
+    - "q_proj"
+    - "k_proj"
+    - "v_proj"
+    - "o_proj"
+  lora_bias: "none"
+  min_pixels: 256
+  max_pixels: 1280
+
+training:
+  output_dir: "/teamspace/studios/this_studio/ImageCaptioning/outputs"
+  checkpoint_dir: "/teamspace/studios/this_studio/ImageCaptioning/checkpoints"
+  per_device_train_batch_size: 4
+  per_device_val_batch_size: 4
+  gradient_accumulation_steps: 8
+  num_epochs: 3
+  learning_rate: 2.0e-4
+  lr_scheduler: "cosine"
+  warmup_ratio: 0.03
+  weight_decay: 0.01
+  max_grad_norm: 1.0
+  bf16: true
+  gradient_checkpointing: true
+  val_check_interval: 0.25
+  save_top_k: 3
+  precision: "bf16-mixed"
+  max_seq_len: 512
+
+inference:
+  beam_size: 4
+  max_new_tokens: 128
+  repetition_penalty: 1.2
+  length_penalty: 1.0
+
+logging:
+  log_every_n_steps: 50
+  tensorboard_dir: "/teamspace/studios/this_studio/ImageCaptioning/logs"
+  wandb_project: null
